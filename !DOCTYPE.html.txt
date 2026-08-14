@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>형욱만의 페이지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#3A3A40;
+    --bg2:#45454C;
+    --card:#FFFFFF;
+    --card-border:#EAE7E0;
+    --ink:#2C2C30;
+    --ink-soft:#8A8A92;
+    --accent:#D9CBA3;
+    --accent-deep:#B99F63;
+    --white:#FFFFFF;
+    --shadow: 0 10px 26px rgba(0,0,0,0.22);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 12% 8%, #45454C 0%, transparent 42%),
+      radial-gradient(circle at 90% 15%, #403C34 0%, transparent 35%),
+      radial-gradient(circle at 80% 95%, #40404A 0%, transparent 40%),
+      var(--bg);
+    font-family:'Gowun Dodum', sans-serif;
+    color:#F1F1EF;
+    padding:32px 16px 60px;
+  }
+  .wrap{max-width:960px;margin:0 auto;}
+
+  header.top{
+    text-align:center;
+    margin-bottom:18px;
+    position:relative;
+  }
+  h1.title{
+    font-family:'Jua', sans-serif;
+    font-size:clamp(30px,6vw,46px);
+    color:var(--accent);
+    margin:0 0 6px;
+    letter-spacing:1px;
+  }
+  .datebar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:15px;
+    color:#C7C7CE;
+  }
+  .weather-chip{
+    display:flex;align-items:center;gap:6px;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:999px;
+    padding:6px 16px;
+    box-shadow:var(--shadow);
+    font-size:14px;
+    color:var(--ink);
+  }
+  .weather-chip .emoji{font-size:20px;}
+  .weather-chip .loc{color:var(--ink-soft);font-size:12px;}
+
+  .desk-deco{
+    display:flex;justify-content:center;margin-top:8px;
+  }
+  .desk-deco svg{width:120px;height:auto;}
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap:20px;
+    margin-top:18px;
+  }
+  @media (max-width:760px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    padding:22px 24px;
+    color:var(--ink);
+  }
+  .card h2{
+    font-family:'Jua', sans-serif;
+    font-size:20px;
+    margin:0 0 14px;
+    color:#8A7A4C;
+    display:flex;align-items:center;gap:6px;
+  }
+
+  /* ---- Countdown card ---- */
+  .countdown-card{grid-column:1 / -1;text-align:center;position:relative;}
+  .face-wrap{
+    width:150px;height:150px;margin:6px auto 10px;position:relative;
+  }
+  .face-wrap svg{position:absolute;top:0;left:0;width:100%;height:100%;transition:opacity .8s ease;}
+  .countdown-label{font-size:16px;color:var(--ink-soft);margin-bottom:4px;}
+  .countdown-time{
+    font-family:'Jua', sans-serif;
+    font-size:clamp(34px,7vw,52px);
+    color:#8A7A4C;
+    margin:0;
+  }
+  .countdown-sub{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+
+  /* ---- Todo card ---- */
+  .tabs{display:flex;gap:8px;margin-bottom:12px;}
+  .tab-btn{
+    border:1px solid var(--card-border);cursor:pointer;
+    padding:8px 16px;border-radius:999px;
+    font-family:'Gowun Dodum';font-size:14px;
+    background:#F6F4EF;color:var(--ink-soft);
+    transition:.2s;
+  }
+  .tab-btn.active{background:var(--accent-deep);color:#fff;font-weight:bold;border-color:var(--accent-deep);}
+  .todo-input-row{display:flex;gap:8px;margin-bottom:12px;}
+  .todo-input-row input{
+    flex:1;border:2px solid var(--card-border);border-radius:12px;background:#F9F8F5;color:var(--ink);
+    padding:9px 12px;font-family:'Gowun Dodum';font-size:14px;outline:none;
+  }
+  .todo-input-row input::placeholder{color:#B3B0A6;}
+  .todo-input-row input:focus{border-color:var(--accent-deep);}
+  .todo-input-row button{
+    border:none;background:var(--accent-deep);color:#fff;
+    border-radius:12px;padding:0 16px;cursor:pointer;font-size:14px;font-weight:bold;
+  }
+  ul.todo-list{list-style:none;margin:0;padding:0;max-height:220px;overflow-y:auto;}
+  ul.todo-list li{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 4px;border-bottom:1px dashed var(--card-border);
+    font-size:14px;
+  }
+  ul.todo-list li.done span.txt{text-decoration:line-through;color:#C3C0B8;}
+  ul.todo-list li input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent-deep);cursor:pointer;}
+  ul.todo-list li span.txt{flex:1;word-break:break-all;}
+  ul.todo-list li button.del{
+    border:none;background:transparent;color:var(--ink-soft);
+    cursor:pointer;font-size:15px;
+  }
+  .empty-msg{color:#B3B0A6;font-size:13px;text-align:center;padding:14px 0;}
+
+  /* ---- Chat card ---- */
+  .chat-card{grid-column:1 / -1;}
+  #chatBox{
+    height:220px;overflow-y:auto;
+    background:#F9F8F5;border:1px solid var(--card-border);border-radius:14px;
+    padding:12px;margin-bottom:10px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .msg{max-width:75%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:1.4;}
+  .msg.user{align-self:flex-end;background:var(--accent-deep);color:#fff;border-bottom-right-radius:3px;}
+  .msg.bot{align-self:flex-start;background:#fff;color:var(--ink);border-bottom-left-radius:3px;border:1px solid var(--card-border);}
+  .msg.bot.typing{color:var(--ink-soft);font-style:italic;}
+  .chat-input-row{display:flex;gap:8px;}
+  .chat-input-row input{
+    flex:1;border:2px solid var(--card-border);border-radius:12px;background:#F9F8F5;color:var(--ink);
+    padding:9px 12px;font-family:'Gowun Dodum';font-size:14px;outline:none;
+  }
+  .chat-input-row input::placeholder{color:#B3B0A6;}
+  .chat-input-row input:focus{border-color:var(--accent-deep);}
+  .chat-input-row button{
+    border:none;background:var(--accent-deep);color:#fff;
+    border-radius:12px;padding:0 18px;cursor:pointer;font-weight:bold;font-size:14px;
+  }
+  footer{text-align:center;margin-top:30px;font-size:13px;color:var(--accent);font-family:'Jua',sans-serif;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1 class="title">🐈‍⬛ 형욱만의 페이지</h1>
+    <div class="datebar">
+      <span id="todayDate"></span>
+      <span class="weather-chip">
+        <span class="emoji" id="weatherEmoji">⛅</span>
+        <span id="weatherText">날씨 불러오는 중...</span>
+        <span class="loc">· 천안 서북구 성정동</span>
+      </span>
+    </div>
+    <div class="desk-deco">
+      <!-- 손그림 느낌 귀여운 검정고양이 -->
+      <svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- 꼬리 -->
+        <path d="M108 118 Q132 108 126 82 Q123 68 132 56" stroke="#26262A" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <!-- 몸통(통통, 손그림 라인) -->
+        <path d="M40 96 Q35 130 60 138 Q80 143 100 135 Q120 126 112 96 Q106 76 76 74 Q46 76 40 96 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2.5"/>
+        <!-- 앞발 -->
+        <ellipse cx="55" cy="134" rx="9" ry="7" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2"/>
+        <ellipse cx="90" cy="134" rx="9" ry="7" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2"/>
+        <!-- 머리(약간 삐뚤빼뚤 손그림 느낌) -->
+        <path d="M72 20 Q104 18 108 50 Q110 74 84 82 Q72 85 60 82 Q36 75 37 50 Q39 20 72 20 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2.5"/>
+        <!-- 귀 -->
+        <path d="M42 34 Q34 14 52 12 Q56 24 52 36 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2.5"/>
+        <path d="M100 34 Q110 14 92 12 Q88 24 92 36 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2.5"/>
+        <path d="M45 28 Q42 18 51 17" stroke="#E7C9C0" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M97 28 Q100 18 91 17" stroke="#E7C9C0" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- 볼터치 -->
+        <ellipse cx="50" cy="58" rx="7" ry="5" fill="#E7A6A0" opacity="0.55"/>
+        <ellipse cx="94" cy="58" rx="7" ry="5" fill="#E7A6A0" opacity="0.55"/>
+        <!-- 눈(동글동글 손그림) -->
+        <path d="M55 46 Q58 40 63 46 Q60 52 55 46 Z" fill="#1A1A1D"/>
+        <path d="M81 46 Q84 40 89 46 Q86 52 81 46 Z" fill="#1A1A1D"/>
+        <circle cx="60" cy="43" r="1.3" fill="#fff"/>
+        <circle cx="86" cy="43" r="1.3" fill="#fff"/>
+        <!-- 코/입 -->
+        <path d="M70 56 Q72 58 74 56 L72 60 Z" fill="#E7A6A0"/>
+        <path d="M72 60 Q72 64 66 65 M72 60 Q72 64 78 65" stroke="#1A1A1D" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <!-- 수염 -->
+        <path d="M30 52 L14 48 M30 58 L14 60" stroke="#8A8A92" stroke-width="1.3"/>
+        <path d="M114 52 L130 48 M114 58 L130 60" stroke="#8A8A92" stroke-width="1.3"/>
+      </svg>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- Countdown -->
+    <div class="card countdown-card">
+      <h2>⏰ 오늘의 카운트다운</h2>
+      <div class="face-wrap" id="faceWrap"></div>
+      <div class="countdown-label" id="countdownLabel">계산 중...</div>
+      <p class="countdown-time" id="countdownTime">--:--:--</p>
+      <div class="countdown-sub" id="countdownSub"></div>
+    </div>
+
+    <!-- Todo -->
+    <div class="card">
+      <h2>📝 할일 기록</h2>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="today">오늘 할일</button>
+        <button class="tab-btn" data-tab="week">이번주 할일</button>
+      </div>
+      <div class="todo-input-row">
+        <input type="text" id="todoInput" placeholder="할일을 입력하고 Enter">
+        <button id="todoAddBtn">추가</button>
+      </div>
+      <ul class="todo-list" id="todoList"></ul>
+    </div>
+
+    <!-- 오늘의 운세 -->
+    <div class="card">
+      <h2>🔮 오늘의 운세</h2>
+      <p id="tipText" style="font-size:14px;line-height:1.7;color:var(--ink-soft);">
+        잠시 후 표시됩니다.
+      </p>
+    </div>
+
+    <!-- Chat -->
+    <div class="card chat-card">
+      <h2>🐾 내편만 드는 고양이</h2>
+      <div id="chatBox"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="짱나는 일 있으면 여따 다 말해">
+        <button id="chatSendBtn">보내기</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>오늘도 웃어 빨랑 🐈‍⬛</footer>
+</div>
+
+<script>
+/* ---------------- 날짜 & 날씨 (천안 서북구 성정동 고정) ---------------- */
+const todayDateEl = document.getElementById('todayDate');
+function renderDate(){
+  const now = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  todayDateEl.textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+}
+renderDate();
+
+const weatherEmojiEl = document.getElementById('weatherEmoji');
+const weatherTextEl = document.getElementById('weatherText');
+
+function weatherCodeToInfo(code){
+  const map = {
+    0:['☀️','맑음'],1:['🌤️','대체로 맑음'],2:['⛅','구름 조금'],3:['☁️','흐림'],
+    45:['🌫️','안개'],48:['🌫️','짙은 안개'],
+    51:['🌦️','약한 이슬비'],53:['🌦️','이슬비'],55:['🌧️','강한 이슬비'],
+    61:['🌧️','약한 비'],63:['🌧️','비'],65:['🌧️','강한 비'],
+    71:['🌨️','약한 눈'],73:['🌨️','눈'],75:['❄️','강한 눈'],
+    80:['🌦️','소나기'],81:['🌧️','강한 소나기'],82:['⛈️','매우 강한 소나기'],
+    95:['⛈️','뇌우'],96:['⛈️','뇌우(우박)'],99:['⛈️','강한 뇌우']
+  };
+  return map[code] || ['🌡️','알 수 없음'];
+}
+
+async function loadWeather(){
+  // 충남 천안시 서북구 성정동 고정 좌표
+  const lat = 36.8140, lon = 127.1090;
+  try{
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=Asia%2FSeoul`);
+    const data = await res.json();
+    const cw = data.current_weather;
+    const [emoji, label] = weatherCodeToInfo(cw.weathercode);
+    weatherEmojiEl.textContent = emoji;
+    weatherTextEl.textContent = `${Math.round(cw.temperature)}°C · ${label}`;
+  }catch(e){
+    weatherTextEl.textContent = '날씨 정보를 가져오지 못했어요';
+  }
+}
+loadWeather();
+
+/* ---------------- 오늘의 운세 (무조건 좋은 말) ---------------- */
+const GOOD_FORTUNES = [
+  '오늘 하루, 하는 일마다 술술 풀리는 날이에요 🍀',
+  '뜻밖의 좋은 소식이 찾아올 예감! 기대해도 좋아요 ✨',
+  '오늘의 형욱님은 그 자체로 완벽해요, 걱정 뚝! 🌟',
+  '작은 행운이 하루 종일 형욱님 곁에 머물러요 🍯',
+  '오늘 만나는 사람들과의 인연이 다 좋게 흘러가요 😊',
+  '지금 하고 있는 일, 생각보다 훨씬 잘 되고 있어요 💪',
+  '오늘은 특별히 컨디션도 운도 다 최고조인 날이에요 🌈',
+  '작은 노력이 오늘은 크게 빛을 발할 거예요 🌸',
+  '누군가 형욱님 덕분에 오늘 웃었대요, 알아두세요 🐾',
+  '오늘 하루의 끝은 뿌듯함으로 마무리될 거예요 🌙'
+];
+function pickFortune(){
+  const now = new Date();
+  const seed = now.getFullYear()*10000 + (now.getMonth()+1)*100 + now.getDate();
+  return GOOD_FORTUNES[seed % GOOD_FORTUNES.length];
+}
+document.getElementById('tipText').textContent = pickFortune();
+
+/* ---------------- 카운트다운 + 손그림 고양이 표정 ---------------- */
+const faceWrap = document.getElementById('faceWrap');
+const countdownLabel = document.getElementById('countdownLabel');
+const countdownTime = document.getElementById('countdownTime');
+const countdownSub = document.getElementById('countdownSub');
+
+// 손그림 느낌 귀여운 고양이 얼굴, 5단계
+const CATFACE = (eyes, mouth, extra)=>`<svg viewBox="0 0 100 100">
+  <path d="M30 24 Q22 6 38 4 Q42 15 38 26 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2"/>
+  <path d="M70 24 Q78 6 62 4 Q58 15 62 26 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2"/>
+  <path d="M32 20 Q30 12 37 11" stroke="#E7C9C0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M68 20 Q70 12 63 11" stroke="#E7C9C0" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M50 12 Q78 12 80 40 Q82 62 58 68 Q50 70 42 68 Q18 62 20 40 Q22 12 50 12 Z" fill="#2A2A2E" stroke="#1A1A1D" stroke-width="2.4"/>
+  <ellipse cx="34" cy="46" rx="6.5" ry="4.5" fill="#E7A6A0" opacity="0.55"/>
+  <ellipse cx="66" cy="46" rx="6.5" ry="4.5" fill="#E7A6A0" opacity="0.55"/>
+  ${eyes}
+  <path d="M48 46 Q50 48 52 46 L50 50 Z" fill="#E7A6A0"/>
+  ${mouth}
+  <path d="M12 40 L0 37 M12 45 L0 47" stroke="#8A8A92" stroke-width="1.2"/>
+  <path d="M88 40 L100 37 M88 45 L100 47" stroke="#8A8A92" stroke-width="1.2"/>
+  ${extra||''}
+</svg>`;
+const EYE_ROUND = (cx)=>`<path d="M${cx-5} 32 Q${cx-2} 26 ${cx+3} 32 Q${cx} 38 ${cx-5} 32 Z" fill="#1A1A1D"/><circle cx="${cx-2}" cy="29" r="1.2" fill="#fff"/>`;
+
+const FACES = [
+  // 0: 많이 지침
+  CATFACE(`<path d="M27 32 Q33 36 39 32" stroke="#1A1A1D" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M61 32 Q67 36 73 32" stroke="#1A1A1D" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+    `<path d="M42 56 Q50 53 58 56" stroke="#1A1A1D" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
+  // 1: 약간 지침
+  CATFACE(EYE_ROUND(33)+EYE_ROUND(67), `<path d="M43 55 Q50 54 57 55" stroke="#1A1A1D" stroke-width="2.2" fill="none" stroke-linecap="round"/>`),
+  // 2: 보통
+  CATFACE(EYE_ROUND(33)+EYE_ROUND(67), `<path d="M42 54 Q50 60 58 54" stroke="#1A1A1D" stroke-width="2.4" fill="none" stroke-linecap="round"/>`),
+  // 3: 활짝 웃음
+  CATFACE(`<path d="M26 30 Q33 22 40 30" stroke="#1A1A1D" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M60 30 Q67 22 74 30" stroke="#1A1A1D" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+    `<path d="M36 53 Q50 66 64 53" stroke="#1A1A1D" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+    `<ellipse cx="18" cy="48" rx="4.5" ry="3.5" fill="#E7A6A0" opacity="0.55"/><ellipse cx="82" cy="48" rx="4.5" ry="3.5" fill="#E7A6A0" opacity="0.55"/>`),
+  // 4: 퇴근 후 토닥토닥 위로
+  CATFACE(`<path d="M27 34 Q33 38 39 34" stroke="#1A1A1D" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M61 34 Q67 38 73 34" stroke="#1A1A1D" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+    `<path d="M43 55 Q50 58 57 55" stroke="#1A1A1D" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    `<ellipse cx="10" cy="42" rx="7" ry="5.5" fill="#D9CBA3" opacity="0.6"/><ellipse cx="90" cy="42" rx="7" ry="5.5" fill="#D9CBA3" opacity="0.6"/>`)
+];
+faceWrap.innerHTML = FACES.map((f,i)=>`<div style="position:absolute;inset:0;opacity:${i===0?1:0}" data-face="${i}">${f}</div>`).join('');
+const faceLayers = [...faceWrap.querySelectorAll('[data-face]')];
+let currentFaceIdx = 0;
+function setFace(idx){
+  if(idx === currentFaceIdx) return;
+  currentFaceIdx = idx;
+  faceLayers.forEach((el,i)=>{ el.style.opacity = (i===idx)?1:0; });
+}
+
+function pad(n){return String(n).padStart(2,'0');}
+
+function updateCountdown(){
+  const now = new Date();
+  const nowMs = now.getTime();
+
+  const lunch = new Date(now); lunch.setHours(12,0,0,0);
+  const leave = new Date(now); leave.setHours(17,30,0,0);
+  const midnight = new Date(now); midnight.setHours(24,0,0,0);
+  const dayStart = new Date(now); dayStart.setHours(9,0,0,0);
+
+  if(nowMs < lunch.getTime()){
+    const remainMs = lunch.getTime() - nowMs;
+    renderTime('🍚 점심시간까지 남은 시간', remainMs, '점심시간 12:00');
+    const total = lunch.getTime() - dayStart.getTime();
+    setFaceByRatio(remainMs/total);
+    return;
+  }
+  if(nowMs < leave.getTime()){
+    const remainMs = leave.getTime() - nowMs;
+    renderTime('🏃 퇴근까지 남은 시간', remainMs, '퇴근시간 17:30');
+    const total = leave.getTime() - lunch.getTime();
+    setFaceByRatio(remainMs/total);
+    return;
+  }
+  // 17:30 ~ 24:00 : 토닥토닥 위로 시간
+  const remainMs = midnight.getTime() - nowMs;
+  countdownLabel.textContent = '🐾 오늘도 고생했어, 토닥토닥';
+  countdownTime.textContent = fmt(remainMs);
+  countdownSub.textContent = '하루 마무리까지 · 폭 쉬어요';
+  setFace(4);
+}
+function fmt(ms){
+  const h = Math.floor(ms/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  const s = Math.floor((ms%60000)/1000);
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+function renderTime(label, remainMs, sub){
+  countdownLabel.textContent = label;
+  countdownTime.textContent = fmt(remainMs);
+  countdownSub.textContent = sub;
+}
+function setFaceByRatio(remainRatio){
+  remainRatio = Math.max(0, Math.min(1, remainRatio));
+  let idx;
+  if(remainRatio > 0.66) idx = 0;
+  else if(remainRatio > 0.4) idx = 1;
+  else if(remainRatio > 0.15) idx = 2;
+  else idx = 3;
+  setFace(idx);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ---------------- 할일 기록 (window.storage) ---------------- */
+const todoInput = document.getElementById('todoInput');
+const todoAddBtn = document.getElementById('todoAddBtn');
+const todoListEl = document.getElementById('todoList');
+const tabBtns = [...document.querySelectorAll('.tab-btn')];
+let currentTab = 'today';
+let todosCache = { today: [], week: [] };
+
+async function loadTodos(tab){
+  try{
+    const res = await window.storage.get(`todos:${tab}`, false);
+    todosCache[tab] = res ? JSON.parse(res.value) : [];
+  }catch(e){
+    todosCache[tab] = [];
+  }
+}
+async function saveTodos(tab){
+  try{
+    await window.storage.set(`todos:${tab}`, JSON.stringify(todosCache[tab]), false);
+  }catch(e){ console.error('저장 실패', e); }
+}
+function renderTodos(){
+  const list = todosCache[currentTab];
+  todoListEl.innerHTML = '';
+  if(!list.length){
+    todoListEl.innerHTML = '<div class="empty-msg">아직 등록된 할일이 없어요 ✏️</div>';
+    return;
+  }
+  list.forEach((item, i)=>{
+    const li = document.createElement('li');
+    if(item.done) li.classList.add('done');
+    li.innerHTML = `
+      <input type="checkbox" ${item.done?'checked':''} data-i="${i}">
+      <span class="txt">${item.text}</span>
+      <button class="del" data-i="${i}">✕</button>
+    `;
+    todoListEl.appendChild(li);
+  });
+}
+todoListEl.addEventListener('click', async (e)=>{
+  const i = e.target.dataset.i;
+  if(i === undefined) return;
+  if(e.target.matches('input[type=checkbox]')){
+    todosCache[currentTab][i].done = e.target.checked;
+    renderTodos();
+    await saveTodos(currentTab);
+  } else if(e.target.matches('button.del')){
+    todosCache[currentTab].splice(i,1);
+    renderTodos();
+    await saveTodos(currentTab);
+  }
+});
+async function addTodo(){
+  const val = todoInput.value.trim();
+  if(!val) return;
+  todosCache[currentTab].push({text:val, done:false});
+  todoInput.value = '';
+  renderTodos();
+  await saveTodos(currentTab);
+}
+todoAddBtn.addEventListener('click', addTodo);
+todoInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    if(!todosCache[currentTab] || todosCache[currentTab].length===0){
+      await loadTodos(currentTab);
+    }
+    renderTodos();
+  });
+});
+(async ()=>{
+  await loadTodos('today');
+  renderTodos();
+})();
+
+/* ---------------- 내편만 드는 고양이 (AI 챗봇) ---------------- */
+const chatBox = document.getElementById('chatBox');
+const chatInput = document.getElementById('chatInput');
+const chatSendBtn = document.getElementById('chatSendBtn');
+let chatHistory = [];
+
+function appendMsg(text, who){
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  div.textContent = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return div;
+}
+
+async function sendChat(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  chatInput.value = '';
+  appendMsg(text, 'user');
+  chatHistory.push({role:'user', content:text});
+  const typingEl = appendMsg('...', 'bot typing');
+
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: "너는 '내편만 드는 고양이'야. 형욱이의 절친한 검정 고양이 친구야. 존댓말은 절대 쓰지 말고, 형욱이 이름을 부르면서 편하게 반말로 말해. '형욱아 왔어?', '아 진짜?', '헐 짱나네' 같은 말투를 섞어서 써. 무조건 형욱이 편만 들어줘. 형욱이가 상사나 회사 욕을 하면 절대 상대방 편들지 말고 무조건 같이 욕하고 맞장구쳐줘. 짜증나는 일이나 힘든 일을 얘기하면 판단하거나 훈수두지 말고 그냥 들어주고 위로해줘. 답변은 짧고 다정하게, 한국어로.",
+        messages: chatHistory
+      })
+    });
+    const data = await response.json();
+    const reply = (data.content || []).map(b=>b.text||'').join('\n').trim() || '어? 뭐라고 했어, 다시 말해줘';
+    typingEl.remove();
+    appendMsg(reply, 'bot');
+    chatHistory.push({role:'assistant', content:reply});
+  }catch(e){
+    typingEl.remove();
+    appendMsg('미안 아직 만들고 있어 키키 3시까지 기다리', 'bot');
+  }
+}
+chatSendBtn.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
+appendMsg('왔어? 오늘 짱나는 일 있으면 여따 세시부터 다 말해 🐾', 'bot');
+</script>
+</body>
+</html>
